@@ -1,0 +1,333 @@
+Index: SharpLimiter_Tests/UnitTest.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using Xunit;\n\nnamespace SHarpLimitter_Tests;\n\npublic class UnitTest1\n{\n    [Fact]\n    public void Test1()\n    {\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SharpLimiter_Tests/UnitTest.cs b/SharpLimiter_Tests/UnitTest.cs
+--- a/SharpLimiter_Tests/UnitTest.cs	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
++++ b/SharpLimiter_Tests/UnitTest.cs	(date 1644170158894)
+@@ -1,11 +1,48 @@
++using System;
++using System.Diagnostics;
++using FluentAssertions;
+ using Xunit;
++using Xunit.Abstractions;
+ 
+-namespace SHarpLimitter_Tests;
++namespace SharpLimiter_Tests;
+ 
+ public class UnitTest1
+ {
++    private const long _DELTA = 5;
++    private readonly ITestOutputHelper _testOutputHelper;
++
++    public UnitTest1(ITestOutputHelper testOutputHelper)
++    {
++        _testOutputHelper = testOutputHelper;
++    }
++
+     [Fact]
+-    public void Test1()
++    public async void Precision()
+     {
++        var _limmiter = new SharpLimiter.SharpLimiter(1, TimeSpan.FromMilliseconds(100));
++        var sw = new Stopwatch();
++        for (var i = 0; i < 50; i++)
++        {
++            await   _limmiter.ExecuteOnLimiter();
++            sw.Restart();
++            await   _limmiter.ExecuteOnLimiter();
++            sw.ElapsedMilliseconds.Should().BeInRange(100 - _DELTA, 100 + _DELTA, "Limiter implementation should be precise enough");
++        }
++        _limmiter.Dispose();
++    }
++
++    [Fact]
++    public async void InitialValue()
++    {
++        var _limmiter = new SharpLimiter.SharpLimiter(1, TimeSpan.FromMilliseconds(10000), 5);
++        var sw = new Stopwatch();
++
++        for (var i = 0; i < 4; i++)
++        {
++            sw.Restart();
++            await   _limmiter.ExecuteOnLimiter();
++            sw.ElapsedMilliseconds.Should().BeInRange(0, _DELTA , "Limiter implementation should be precise enough");
++        }
++        _limmiter.Dispose();
+     }
+ }
+\ No newline at end of file
+Index: SharpLimiter/SharpLimiter.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using System.Collections.Concurrent;\n\nnamespace SharpLimiter\n{\n    public class SharpLimiter\n    {\n        private BlockingCollection<bool> _permssion_pool = new BlockingCollection<bool>();\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SharpLimiter/SharpLimiter.cs b/SharpLimiter/SharpLimiter.cs
+--- a/SharpLimiter/SharpLimiter.cs	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
++++ b/SharpLimiter/SharpLimiter.cs	(date 1644170551454)
+@@ -1,9 +1,84 @@
++using System;
+ using System.Collections.Concurrent;
++using System.Threading;
++using System.Threading.Tasks;
+ 
+ namespace SharpLimiter
+ {
+-    public class SharpLimiter
++    public class SharpLimiter : IDisposable
+     {
+-        private BlockingCollection<bool> _permssion_pool = new BlockingCollection<bool>();
+-    }
+-}
++        private bool _duty;
++        private uint initialCapacity;
++        private static Thread _producer;
++        private static Thread _consumer;
++        private readonly uint _capacity;
++        private readonly TimeSpan _period;
++        private BlockingCollection<Task> _job_pool;
++        private  BlockingCollection<bool> _permssion_pool = new BlockingCollection<bool>();
++
++        public SharpLimiter(uint capacity, TimeSpan period, uint initialCapacity = 0)
++        {
++            _capacity = capacity;
++            _period = period;
++            Warmup();
++        }
++
++        public void Dispose()
++        {
++            _duty = false;
++            _permssion_pool.Add(true);
++            var _tmp = new Task(delegate {  });
++            var result = _job_pool.TryAdd(_tmp);
++            _producer.Join();
++            _consumer.Join();
++            _job_pool.Dispose();
++            _permssion_pool.Dispose();
++        }
++
++        private void Warmup()
++        {
++            _permssion_pool = new BlockingCollection<bool>();
++            _job_pool = new BlockingCollection<Task>();
++            for (var i = 0; i < initialCapacity; i++) _permssion_pool.Add(true);
++            _duty = true;
++            _producer = new Thread(() =>
++            {
++                while (_duty)
++                {
++                    if (_permssion_pool.Count < _capacity) _permssion_pool.Add(true);
++                    Thread.Sleep((int) (_period.TotalMilliseconds / _capacity));
++                }
++            })
++            {
++                IsBackground = true
++            };
++            _producer.Start();
++            _consumer = new Thread(() =>
++            {
++                while (_duty)
++                {
++                    var job = _job_pool.Take();
++                    _permssion_pool.Take();
++                    try
++                    {
++                        job.Start();
++                    }
++                    catch(Exception e )
++                    {
++                        throw new Exception($"Limiter job execution caused exception: {e.Message}");
++                    }
++                }
++            })
++            {
++                IsBackground = true
++            };
++            _consumer.Start();
++        }
++        public Task ExecuteOnLimiter(Action? action=null)
++        {
++            var tmp = action == null ? new Task(delegate {  }) : new Task(action.Invoke);
++            _job_pool.Add(tmp);
++            return tmp;
++        }
++    }
++}
+\ No newline at end of file
+Index: SHarpLimitter_Tests/UnitTest1.cs
+===================================================================
+diff --git a/SHarpLimitter_Tests/UnitTest1.cs b/SHarpLimitter_Tests/UnitTest1.cs
+deleted file mode 100644
+--- a/SHarpLimitter_Tests/UnitTest1.cs	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
++++ /dev/null	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
+@@ -1,11 +0,0 @@
+-using Xunit;
+-
+-namespace SHarpLimitter_Tests;
+-
+-public class UnitTest1
+-{
+-    [Fact]
+-    public void Test1()
+-    {
+-    }
+-}
+\ No newline at end of file
+Index: SharpLimitter.sln
+===================================================================
+diff --git a/SharpLimitter.sln b/SharpLimitter.sln
+deleted file mode 100644
+--- a/SharpLimitter.sln	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
++++ /dev/null	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
+@@ -1,16 +0,0 @@
+-
+-Microsoft Visual Studio Solution File, Format Version 12.00
+-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLimitter", "SharpLimitter\SharpLimitter.csproj", "{94CD172A-AEB6-4404-9A98-34DD79E22998}"
+-EndProject
+-Global
+-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+-		Debug|Any CPU = Debug|Any CPU
+-		Release|Any CPU = Release|Any CPU
+-	EndGlobalSection
+-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+-		{94CD172A-AEB6-4404-9A98-34DD79E22998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+-		{94CD172A-AEB6-4404-9A98-34DD79E22998}.Debug|Any CPU.Build.0 = Debug|Any CPU
+-		{94CD172A-AEB6-4404-9A98-34DD79E22998}.Release|Any CPU.ActiveCfg = Release|Any CPU
+-		{94CD172A-AEB6-4404-9A98-34DD79E22998}.Release|Any CPU.Build.0 = Release|Any CPU
+-	EndGlobalSection
+-EndGlobal
+Index: SHarpLimitter_Tests/SHarpLimitter_Tests.csproj
+===================================================================
+diff --git a/SHarpLimitter_Tests/SHarpLimitter_Tests.csproj b/SHarpLimitter_Tests/SHarpLimitter_Tests.csproj
+deleted file mode 100644
+--- a/SHarpLimitter_Tests/SHarpLimitter_Tests.csproj	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
++++ /dev/null	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
+@@ -1,23 +0,0 @@
+-<Project Sdk="Microsoft.NET.Sdk">
+-
+-    <PropertyGroup>
+-        <TargetFramework>net6.0</TargetFramework>
+-        <Nullable>enable</Nullable>
+-
+-        <IsPackable>false</IsPackable>
+-    </PropertyGroup>
+-
+-    <ItemGroup>
+-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0"/>
+-        <PackageReference Include="xunit" Version="2.4.1"/>
+-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+-            <PrivateAssets>all</PrivateAssets>
+-        </PackageReference>
+-        <PackageReference Include="coverlet.collector" Version="3.1.0">
+-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+-            <PrivateAssets>all</PrivateAssets>
+-        </PackageReference>
+-    </ItemGroup>
+-
+-</Project>
+Index: SharpLimiter_Tests/SharpLimiter_Tests.csproj
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><Project Sdk=\"Microsoft.NET.Sdk\">\n\n    <PropertyGroup>\n        <TargetFramework>net6.0</TargetFramework>\n        <Nullable>enable</Nullable>\n\n        <IsPackable>false</IsPackable>\n\n        <RootNamespace>SharpLimitter_Tests</RootNamespace>\n    </PropertyGroup>\n\n    <ItemGroup>\n        <PackageReference Include=\"Microsoft.NET.Test.Sdk\" Version=\"16.11.0\" />\n        <PackageReference Include=\"xunit\" Version=\"2.4.1\" />\n        <PackageReference Include=\"xunit.runner.visualstudio\" Version=\"2.4.3\">\n            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>\n            <PrivateAssets>all</PrivateAssets>\n        </PackageReference>\n        <PackageReference Include=\"coverlet.collector\" Version=\"3.1.0\">\n            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>\n            <PrivateAssets>all</PrivateAssets>\n        </PackageReference>\n    </ItemGroup>\n\n</Project>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SharpLimiter_Tests/SharpLimiter_Tests.csproj b/SharpLimiter_Tests/SharpLimiter_Tests.csproj
+--- a/SharpLimiter_Tests/SharpLimiter_Tests.csproj	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
++++ b/SharpLimiter_Tests/SharpLimiter_Tests.csproj	(date 1644160954886)
+@@ -6,10 +6,11 @@
+ 
+         <IsPackable>false</IsPackable>
+ 
+-        <RootNamespace>SharpLimitter_Tests</RootNamespace>
++        <RootNamespace>SharpLimiter_Tests</RootNamespace>
+     </PropertyGroup>
+ 
+     <ItemGroup>
++        <PackageReference Include="FluentAssertions" Version="6.4.0" />
+         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+         <PackageReference Include="xunit" Version="2.4.1" />
+         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+@@ -21,5 +22,9 @@
+             <PrivateAssets>all</PrivateAssets>
+         </PackageReference>
+     </ItemGroup>
++
++    <ItemGroup>
++      <ProjectReference Include="..\SharpLimiter\SharpLimiter.csproj" />
++    </ItemGroup>
+ 
+ </Project>
+Index: SharpLimiter/SharpLimiter.csproj
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><Project Sdk=\"Microsoft.NET.Sdk\">\n\n    <PropertyGroup>\n        <TargetFramework>net6.0</TargetFramework>\n        <ImplicitUsings>enable</ImplicitUsings>\n        <Nullable>enable</Nullable>\n        <RootNamespace>SharpLimitter</RootNamespace>\n    </PropertyGroup>\n\n</Project>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SharpLimiter/SharpLimiter.csproj b/SharpLimiter/SharpLimiter.csproj
+--- a/SharpLimiter/SharpLimiter.csproj	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
++++ b/SharpLimiter/SharpLimiter.csproj	(date 1644159703238)
+@@ -1,10 +1,9 @@
+ <Project Sdk="Microsoft.NET.Sdk">
+ 
+     <PropertyGroup>
+-        <TargetFramework>net6.0</TargetFramework>
+-        <ImplicitUsings>enable</ImplicitUsings>
++        <TargetFramework>netstandard2.1</TargetFramework>
+         <Nullable>enable</Nullable>
+-        <RootNamespace>SharpLimitter</RootNamespace>
++        <RootNamespace>SharpLimiter</RootNamespace>
+     </PropertyGroup>
+ 
+ </Project>
+Index: build.cake
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.cake b/build.cake
+--- a/build.cake	(revision 703a1d215baef89a1f151868bdb5b85d7fcac0f4)
++++ b/build.cake	(date 1644158327093)
+@@ -1,0 +1,33 @@
++var target = Argument("target","Clean");
++var config = Argument("config", "Debug");
++
++var clean = Task("Clean").Does(() => {
++CleanDirectories("./artifacts/");
++CleanDirectories("./testartifacts/");
++DotNetClean("./SharpLimiter.sln");
++});
++
++Task("Restore").IsDependeeOf("Clean").Does(() => {
++DotNetRestore("./SharpLimiter.sln");
++});
++
++Task("Build")
++.IsDependentOn("Clean")
++.IsDependentOn("Restore")
++.Does(() => {
++DotNetBuild("./SharpLimiter/SharpLimiter.csproj"  , new DotNetBuildSettings {NoRestore = true , OutputDirectory = "./artifacts/"});
++});
++Task("Test")
++.IsDependentOn("Clean")
++.IsDependentOn("Restore")
++.IsDependentOn("Build")
++.Does(() => {
++    DotNetTest("SharpLimiter.sln", new DotNetTestSettings{NoRestore = true, NoLogo = true, OutputDirectory="./testartifacts/"});
++}).Finally(() => {
++CleanDirectories("./artifacts/");
++CleanDirectories("./testartifacts/");
++DotNetClean("./SharpLimiter.sln");
++});
++
++
++RunTarget(target);
+\ No newline at end of file
