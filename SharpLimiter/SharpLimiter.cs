@@ -38,6 +38,7 @@ namespace SharpLimiter
 
         private void Warmup()
         {
+            
             _permssion_pool = new BlockingCollection<bool>();
             _job_pool = new BlockingCollection<Task>();
             for (var i = 0; i < _initialCapacity; i++) _permssion_pool.Add(true);
