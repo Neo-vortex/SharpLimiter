@@ -8,7 +8,7 @@ namespace SharpLimiter_Tests;
 
 public class UnitTest1
 {
-    private const long _DELTA = 5;
+    private const long _DELTA = 20;         //this delta can be much better in real systems but anything below 20 will likely fails on CI/CD 
     private readonly ITestOutputHelper _testOutputHelper;
 
     public UnitTest1(ITestOutputHelper testOutputHelper)
@@ -31,6 +31,7 @@ public class UnitTest1
         _limmiter.Dispose();
     }
 
+    
     [Fact]
     public async void InitialValue()
     {
