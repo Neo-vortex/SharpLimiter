@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLimiter", "SharpLimiter\SharpLimiter.csproj", "{94CD172A-AEB6-4404-9A98-34DD79E22998}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLimiter_Tests", "SharpLimiter_Tests\SharpLimiter_Tests.csproj", "{F0DB1EF4-BAAE-4BF7-8201-08E7EA0C2A97}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94CD172A-AEB6-4404-9A98-34DD79E22998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94CD172A-AEB6-4404-9A98-34DD79E22998}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94CD172A-AEB6-4404-9A98-34DD79E22998}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94CD172A-AEB6-4404-9A98-34DD79E22998}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0DB1EF4-BAAE-4BF7-8201-08E7EA0C2A97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0DB1EF4-BAAE-4BF7-8201-08E7EA0C2A97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0DB1EF4-BAAE-4BF7-8201-08E7EA0C2A97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0DB1EF4-BAAE-4BF7-8201-08E7EA0C2A97}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
