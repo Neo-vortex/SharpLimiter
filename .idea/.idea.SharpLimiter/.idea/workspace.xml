@@ -40,7 +40,7 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
-  <component name="RunManager" selected="2b69a37b-b00e-49e8-9cb2-1481ec1b6eb7">
+  <component name="RunManager">
     <configuration name="TestConsole" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />

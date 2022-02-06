@@ -3,11 +3,11 @@ name: .NET
 on:
   push:
     branches:
-    - "master"
+    - "main"
 
 
   pull_request:
-    branches: [ 'master' ]
+    branches: [ 'main' ]
 
 jobs:
   build:
