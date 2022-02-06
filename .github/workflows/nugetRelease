@@ -1,0 +1,39 @@
+name: .NET
+
+on:
+  push:
+    branches:
+    - "publish"
+
+
+  pull_request:
+    branches: [ 'publish' ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Inital Submodules 
+      run: git submodule update --init --recursive
+    - name: Inital tool-manifest  
+      run: dotnet new tool-manifest 
+    - name: Install cake build tool
+      run: dotnet tool install Cake.Tool --version 2.0.0
+    - name: Test
+      run: dotnet cake --target="Test"
+    - name: Test
+      run: dotnet cake --target="Build"
+      - name: Publish to NuGet
+      uses: brandedoutcast/publish-nuget@v2
+      with:
+        PROJECT_FILE_PATH: SharpLimiter/SharpLimiter.csproj
+        VERSION_REGEX: '^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$'
+        TAG_FORMAT: '*'
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}

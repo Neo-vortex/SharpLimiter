@@ -15,7 +15,7 @@ Task("Build")
 .IsDependentOn("Clean")
 .IsDependentOn("Restore")
 .Does(() => {
-DotNetBuild("./SharpLimiter/SharpLimiter.csproj"  , new DotNetBuildSettings {NoRestore = true , OutputDirectory = "./artifacts/"});
+DotNetBuild("./SharpLimiter/SharpLimiter.csproj"  , new DotNetBuildSettings {NoRestore = true  , OutputDirectory = "./artifacts/" , Configuration = config });
 });
 Task("Test")
 .IsDependentOn("Clean")
