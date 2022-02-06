@@ -4,9 +4,7 @@
     <projectFile>TestConsole/TestConsole.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="205be361-8a61-4291-9a39-d50e816fede0" name="Changes" comment="checking cake build tool">
-      <change beforePath="$PROJECT_DIR$/SharpLimiter/SharpLimiter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpLimiter/SharpLimiter.cs" afterDir="false" />
-    </list>
+    <list default="true" id="205be361-8a61-4291-9a39-d50e816fede0" name="Changes" comment="checking cake build tool" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +18,7 @@
     <setting file="mock:///home/noob/RiderProjects/SharpLimitter/SharpLimiter_Tests/UnitTest.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SharpLimiter/obj/Debug/netstandard2.1/SharpLimiter.GlobalUsings.g.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e7bb3d362b124d479e579cbbaef61f699e9200/41/64bc37b3/Thread.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/27b6cd81c19b490c8f1e89507e90189ea0000/d4/7169cebc/XUnit2TestFramework.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/50272db27ee64faca08211a6e9ee5d0b37c00/63/fe71d67e/BlockingCollection`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e7bb3d362b124d479e579cbbaef61f699e9200/23/5ff11dea/Task.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
