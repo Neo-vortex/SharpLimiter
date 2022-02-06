@@ -4,17 +4,7 @@
     <projectFile>TestConsole/TestConsole.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="205be361-8a61-4291-9a39-d50e816fede0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.SharpLimiter/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.SharpLimitter/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SharpLimiter.sln" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SharpLimiter/SharpLimiter.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SharpLimiter/SharpLimiter.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SharpLimiter_Tests/SharpLimiter_Tests.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SharpLimiter_Tests/UnitTest.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.cake" afterDir="false" />
-    </list>
+    <list default="true" id="205be361-8a61-4291-9a39-d50e816fede0" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,7 +69,7 @@
       <option name="presentableId" value="Default" />
       <updated>1644158222017</updated>
       <workItem from="1644158224200" duration="8575000" />
-      <workItem from="1644166834383" duration="3641000" />
+      <workItem from="1644166834383" duration="4522000" />
     </task>
     <servers />
   </component>
