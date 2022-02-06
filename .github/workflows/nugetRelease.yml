@@ -2,12 +2,9 @@ name: .NET
 
 on:
   push:
-    branches:
-    - "publish"
-
-
+    branches: [ publish ]
   pull_request:
-    branches: [ 'publish' ]
+    branches: [ publish ]
 
 jobs:
   build:
