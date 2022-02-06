@@ -4,7 +4,9 @@
     <projectFile>TestConsole/TestConsole.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="205be361-8a61-4291-9a39-d50e816fede0" name="Changes" comment="" />
+    <list default="true" id="205be361-8a61-4291-9a39-d50e816fede0" name="Changes" comment="checking cake build tool">
+      <change beforePath="$PROJECT_DIR$/SharpLimiter/SharpLimiter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpLimiter/SharpLimiter.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +17,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/46c2b7b87b4f49a4884cd32e9d2223d471c00/4c/7688cee5/Task.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/372f331948574f6784222cd0475a2d0b4400/f8/111e8da8/BlockingCollection`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/27b6cd81c19b490c8f1e89507e90189ea0000/19/9d1a2eb2/AssertionScope.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/noob/RiderProjects/SharpLimitter/SharpLimiter_Tests/UnitTest.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SharpLimiter/obj/Debug/netstandard2.1/SharpLimiter.GlobalUsings.g.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e7bb3d362b124d479e579cbbaef61f699e9200/41/64bc37b3/Thread.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/50272db27ee64faca08211a6e9ee5d0b37c00/63/fe71d67e/BlockingCollection`1.cs" root0="SKIP_HIGHLIGHTING" />
@@ -71,6 +74,14 @@
       <workItem from="1644158224200" duration="8575000" />
       <workItem from="1644166834383" duration="4522000" />
     </task>
+    <task id="LOCAL-00001" summary="checking cake build tool">
+      <created>1644172625559</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1644172625559</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -92,5 +103,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="testing dotnet cake" />
+    <MESSAGE value="checking dotnet cake build trigger" />
+    <MESSAGE value="checking cake build tool" />
+    <option name="LAST_COMMIT_MESSAGE" value="checking cake build tool" />
   </component>
 </project>

@@ -8,7 +8,7 @@ namespace SharpLimiter
     public class SharpLimiter : IDisposable
     {
         private bool _duty;
-        private uint initialCapacity;
+        private uint _initialCapacity;
         private static Thread _producer;
         private static Thread _consumer;
         private readonly uint _capacity;
@@ -20,6 +20,7 @@ namespace SharpLimiter
         {
             _capacity = capacity;
             _period = period;
+            _initialCapacity = initialCapacity;
             Warmup();
         }
 
@@ -39,7 +40,7 @@ namespace SharpLimiter
         {
             _permssion_pool = new BlockingCollection<bool>();
             _job_pool = new BlockingCollection<Task>();
-            for (var i = 0; i < initialCapacity; i++) _permssion_pool.Add(true);
+            for (var i = 0; i < _initialCapacity; i++) _permssion_pool.Add(true);
             _duty = true;
             _producer = new Thread(() =>
             {
